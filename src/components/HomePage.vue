@@ -1,6 +1,6 @@
 <template>
   <div class="listing">
-    <h3>Post lists:</h3>
+    <h3>Posts list:</h3>
     <div v-for="(row, index) in posts" :key="index" class="listing__row">
       <div v-for="(item, i) in row" :key="i">
         <Post :post-info="item" />
