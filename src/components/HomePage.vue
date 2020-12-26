@@ -1,24 +1,37 @@
 <template>
   <div class="listing">
     <h3>Posts list:</h3>
-    <div v-for="(row, index) in posts" :key="index" class="listing__row">
+    <LoadingBullets v-if="loading" />
+    <div
+      v-else-if="!loading & !noResult"
+      v-for="(row, index) in posts"
+      :key="index"
+      class="listing__row"
+    >
       <div v-for="(item, i) in row" :key="i">
         <Post :post-info="item" />
       </div>
+    </div>
+    <div v-else-if="!loading & noResult">
+      <p>No posts were found :(</p>
     </div>
   </div>
 </template>
 
 <script>
 import { HTTP } from '@/utils/http-common.js'
+import LoadingBullets from '@/components/common/loading-bullets.vue'
 import Post from '@/components/Post.vue'
 export default {
   components: {
+    LoadingBullets,
     Post
   },
   data() {
     return {
       posts: [],
+      loading: true,
+      noResult: false,
       errors: []
     }
   },
@@ -30,6 +43,7 @@ export default {
       })
       .catch(e => {
         this.errors.push(e)
+        this.noResult = true
       })
   },
   methods: {
@@ -40,6 +54,7 @@ export default {
       }
       console.log(rows)
       this.posts = rows
+      this.loading = false
     }
   }
 }
@@ -47,6 +62,7 @@ export default {
 
 <style lang="scss" scoped>
 .listing {
+  padding: 5px 5px;
   &__row {
     display: flex;
     justify-content: space-around;
